@@ -1,46 +1,52 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const images = document.querySelectorAll('.image');
+// Get all the draggable elements
+const images = document.querySelectorAll('.image');
 
-    images.forEach(image => {
-        image.addEventListener('dragstart', dragStart);
-        image.addEventListener('dragover', dragOver);
-        image.addEventListener('drop', drop);
-    });
-
-    let draggedElement = null;
-
-    function dragStart(event) {
-        // Store the reference to the dragged element
-        draggedElement = event.target;
-        event.dataTransfer.setData("text", draggedElement.id);
-    }
-
-    function dragOver(event) {
-        // Prevent the default action (to allow dropping)
-        event.preventDefault();
-    }
-
-    function drop(event) {
-        event.preventDefault();
-
-        // Get the ID of the target element
-        const target = event.target;
-
-        // Check if the target is a valid drop location (i.e., an image div)
-        if (target && target !== draggedElement && target.classList.contains('image')) {
-            // Swap the content (images)
-            const draggedId = draggedElement.id;
-            const targetId = target.id;
-
-            // Swap the elements
-            const draggedContent = draggedElement.innerHTML;
-            draggedElement.innerHTML = target.innerHTML;
-            target.innerHTML = draggedContent;
-
-            // Optional: Update the background images if necessary (if background images are involved)
-            const draggedBg = draggedElement.style.backgroundImage;
-            draggedElement.style.backgroundImage = target.style.backgroundImage;
-            target.style.backgroundImage = draggedBg;
-        }
-    }
+// Add event listeners for dragstart, dragover, and drop
+images.forEach(image => {
+  image.addEventListener('dragstart', dragStart);
+  image.addEventListener('dragover', dragOver);
+  image.addEventListener('drop', drop);
+  image.addEventListener('dragenter', dragEnter);
+  image.addEventListener('dragleave', dragLeave);
 });
+
+let draggedImage = null;
+
+function dragStart(e) {
+  draggedImage = e.target;
+  // Delay to ensure dragged element stays visible
+  setTimeout(() => {
+    e.target.style.opacity = '0.5'; // Make the image semi-transparent during drag
+  }, 0);
+}
+
+function dragOver(e) {
+  e.preventDefault(); // Allow the drop
+}
+
+function dragEnter(e) {
+  // Change the background color of the image when it's hovered
+  e.target.style.backgroundColor = '#ddd';
+}
+
+function dragLeave(e) {
+  // Reset the background color when the dragged item leaves
+  e.target.style.backgroundColor = '#ccc';
+}
+
+function drop(e) {
+  e.preventDefault();
+  // Reset background color after drop
+  e.target.style.backgroundColor = '#ccc';
+
+  // Check if the drop target is not the dragged image itself
+  if (draggedImage !== e.target) {
+    // Swap the content between the dragged and dropped image
+    const draggedContent = draggedImage.innerHTML;
+    draggedImage.innerHTML = e.target.innerHTML;
+    e.target.innerHTML = draggedContent;
+  }
+
+  // Reset the opacity of the dragged image
+  draggedImage.style.opacity = '1';
+}
