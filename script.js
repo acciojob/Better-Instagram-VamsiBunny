@@ -1,32 +1,46 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const images = document.querySelectorAll(".image");
-  
-  // Handle drag start event
-  images.forEach((image) => {
-    image.addEventListener("dragstart", (e) => {
-      e.dataTransfer.setData("text", e.target.id); // Set the dragged item's ID
+document.addEventListener('DOMContentLoaded', function () {
+    const images = document.querySelectorAll('.image');
+
+    images.forEach(image => {
+        image.addEventListener('dragstart', dragStart);
+        image.addEventListener('dragover', dragOver);
+        image.addEventListener('drop', drop);
     });
 
-    image.addEventListener("dragover", (e) => {
-      e.preventDefault(); // Allow drop
-    });
+    let draggedElement = null;
 
-    image.addEventListener("drop", (e) => {
-      e.preventDefault(); // Prevent default drop behavior
+    function dragStart(event) {
+        // Store the reference to the dragged element
+        draggedElement = event.target;
+        event.dataTransfer.setData("text", draggedElement.id);
+    }
 
-      const draggedId = e.dataTransfer.getData("text");
-      const draggedElement = document.getElementById(draggedId);
-      const targetElement = e.target;
+    function dragOver(event) {
+        // Prevent the default action (to allow dropping)
+        event.preventDefault();
+    }
 
-      if (draggedElement !== targetElement) {
-        // Swap the background images
-        const draggedBg = draggedElement.style.backgroundImage;
-        const targetBg = targetElement.style.backgroundImage;
+    function drop(event) {
+        event.preventDefault();
 
-        draggedElement.style.backgroundImage = targetBg;
-        targetElement.style.backgroundImage = draggedBg;
-      }
-    });
-  });
+        // Get the ID of the target element
+        const target = event.target;
+
+        // Check if the target is a valid drop location (i.e., an image div)
+        if (target && target !== draggedElement && target.classList.contains('image')) {
+            // Swap the content (images)
+            const draggedId = draggedElement.id;
+            const targetId = target.id;
+
+            // Swap the elements
+            const draggedContent = draggedElement.innerHTML;
+            draggedElement.innerHTML = target.innerHTML;
+            target.innerHTML = draggedContent;
+
+            // Optional: Update the background images if necessary (if background images are involved)
+            const draggedBg = draggedElement.style.backgroundImage;
+            draggedElement.style.backgroundImage = target.style.backgroundImage;
+            target.style.backgroundImage = draggedBg;
+        }
+    }
 });
-
