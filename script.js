@@ -21,32 +21,49 @@ function dragStart(e) {
 }
 
 function dragOver(e) {
-  e.preventDefault(); // Allow the drop
+  e.preventDefault();
+
+  // Check if the target is a valid draggable image
+  if (e.target && e.target.classList.contains('image')) {
+    e.target.style.backgroundColor = 'yellow'; // Highlight valid drop target
+  } else {
+    e.target.style.backgroundColor = ''; // Reset if it's not a valid target
+  }
 }
 
 function dragEnter(e) {
-  // Change the background color of the image when it's hovered
-  e.target.style.backgroundColor = '#ddd';
+  // Only highlight if the target is a valid image element
+  if (e.target && e.target.classList.contains('image')) {
+    e.target.style.backgroundColor = 'yellow';
+  }
 }
 
 function dragLeave(e) {
   // Reset the background color when the dragged item leaves
-  e.target.style.backgroundColor = '#ccc';
+  if (e.target && e.target.classList.contains('image')) {
+    e.target.style.backgroundColor = '';
+  }
 }
 
 function drop(e) {
   e.preventDefault();
-  // Reset background color after drop
-  e.target.style.backgroundColor = '#ccc';
+  
+  // Reset the background color after drop
+  if (e.target && e.target.classList.contains('image')) {
+    e.target.style.backgroundColor = '';
 
-  // Check if the drop target is not the dragged image itself
-  if (draggedImage !== e.target) {
-    // Swap the content between the dragged and dropped image
-    const draggedContent = draggedImage.innerHTML;
-    draggedImage.innerHTML = e.target.innerHTML;
-    e.target.innerHTML = draggedContent;
+    // Check if the drop target is not the dragged image itself
+    if (draggedImage !== e.target) {
+      // Swap the content between the dragged and dropped image
+      const draggedContent = draggedImage.innerHTML;
+      draggedImage.innerHTML = e.target.innerHTML;
+      e.target.innerHTML = draggedContent;
+    }
+
+    // Reset the opacity of the dragged image
+    draggedImage.style.opacity = '1';
+  } else {
+    // If the target is not a valid image, do not allow the drop
+    e.target.style.backgroundColor = ''; // Reset background color if drop is not allowed
   }
-
-  // Reset the opacity of the dragged image
-  draggedImage.style.opacity = '1';
 }
