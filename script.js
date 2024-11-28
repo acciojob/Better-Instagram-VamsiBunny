@@ -1,4 +1,4 @@
-// Get all the draggable elements
+// Get all the draggable elements (divs containing images)
 const images = document.querySelectorAll('.image');
 
 // Add event listeners for dragstart, dragover, and drop
@@ -12,51 +12,53 @@ images.forEach(image => {
 
 let draggedImage = null;
 
+// When drag starts, store the dragged element
 function dragStart(e) {
   draggedImage = e.target;
-  // Delay to ensure dragged element stays visible
+  // Set the opacity to show that it's being dragged
   setTimeout(() => {
-    e.target.style.opacity = '0.5'; // Make the image semi-transparent during drag
+    e.target.style.opacity = '0.5';
   }, 0);
 }
 
+// Allow dragging over the div (required to make a valid drop target)
 function dragOver(e) {
   e.preventDefault();
-
-  // Check if the target is a valid draggable image
   if (e.target && e.target.classList.contains('image')) {
-    e.target.style.backgroundColor = 'yellow'; // Highlight valid drop target
+    e.target.style.backgroundColor = 'yellow'; // Highlight drop target
   }
 }
 
+// Highlight the target while dragging over it
 function dragEnter(e) {
-  // Only highlight if the target is a valid image element
   if (e.target && e.target.classList.contains('image')) {
     e.target.style.backgroundColor = 'yellow';
   }
 }
 
+// Remove highlight when the dragged item leaves the target
 function dragLeave(e) {
-  // Reset the background color when the dragged item leaves
   if (e.target && e.target.classList.contains('image')) {
     e.target.style.backgroundColor = '';
   }
 }
 
+// Handle the drop event
 function drop(e) {
   e.preventDefault();
-  
-  // Only allow drop if the target is an image div
+  // Remove background highlight after drop
   if (e.target && e.target.classList.contains('image')) {
-    // Reset the background color after drop
     e.target.style.backgroundColor = '';
 
-    // Check if the drop target is not the dragged image itself
+    // If the dragged image is not dropped on itself, swap images
     if (draggedImage !== e.target) {
-      // Swap the content between the dragged and dropped image
-      const draggedContent = draggedImage.innerHTML;
-      draggedImage.innerHTML = e.target.innerHTML;
-      e.target.innerHTML = draggedContent;
+      const draggedImg = draggedImage.querySelector('img');
+      const targetImg = e.target.querySelector('img');
+
+      // Swap the src of the images to swap the content
+      const tempSrc = draggedImg.src;
+      draggedImg.src = targetImg.src;
+      targetImg.src = tempSrc;
     }
 
     // Reset the opacity of the dragged image
