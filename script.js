@@ -10,27 +10,25 @@ images.forEach(image => {
   image.addEventListener('dragleave', dragLeave);
 });
 
-let draggedImage = null;
+let draggedElement = null;
 
 // When drag starts, store the dragged element
 function dragStart(e) {
-  draggedImage = e.target;
-  // Set the opacity to show that it's being dragged
+  draggedElement = e.target;
+  e.dataTransfer.setData('text/plain', e.target.id);
   setTimeout(() => {
     e.target.style.opacity = '0.5';
   }, 0);
 }
 
-// Allow dragging over the div (required to make a valid drop target)
+// Allow dragging over the div
 function dragOver(e) {
   e.preventDefault();
-  if (e.target && e.target.classList.contains('image')) {
-    e.target.style.backgroundColor = 'yellow'; // Highlight drop target
-  }
 }
 
 // Highlight the target while dragging over it
 function dragEnter(e) {
+  e.preventDefault();
   if (e.target && e.target.classList.contains('image')) {
     e.target.style.backgroundColor = 'yellow';
   }
@@ -46,22 +44,17 @@ function dragLeave(e) {
 // Handle the drop event
 function drop(e) {
   e.preventDefault();
-  // Remove background highlight after drop
   if (e.target && e.target.classList.contains('image')) {
     e.target.style.backgroundColor = '';
-
-    // If the dragged image is not dropped on itself, swap images
-    if (draggedImage !== e.target) {
-      const draggedImg = draggedImage.querySelector('img');
-      const targetImg = e.target.querySelector('img');
-
-      // Swap the src of the images to swap the content
+    const droppedElement = e.target;
+    if (draggedElement !== droppedElement) {
+      // Swap the images between the two elements
+      const draggedImg = draggedElement.querySelector('img');
+      const droppedImg = droppedElement.querySelector('img');
       const tempSrc = draggedImg.src;
-      draggedImg.src = targetImg.src;
-      targetImg.src = tempSrc;
+      draggedImg.src = droppedImg.src;
+      droppedImg.src = tempSrc;
     }
-
-    // Reset the opacity of the dragged image
-    draggedImage.style.opacity = '1';
+    draggedElement.style.opacity = '1';
   }
 }
