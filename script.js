@@ -1,60 +1,54 @@
-// Get all the draggable elements (divs containing images)
 const images = document.querySelectorAll('.image');
-
-// Add event listeners for dragstart, dragover, and drop
-images.forEach(image => {
-  image.addEventListener('dragstart', dragStart);
-  image.addEventListener('dragover', dragOver);
-  image.addEventListener('drop', drop);
-  image.addEventListener('dragenter', dragEnter);
-  image.addEventListener('dragleave', dragLeave);
-});
-
 let draggedElement = null;
 
-// When drag starts, store the dragged element
-function dragStart(e) {
-  draggedElement = e.target;
-  e.dataTransfer.setData('text/plain', e.target.id);
-  setTimeout(() => {
-    e.target.style.opacity = '0.5';
-  }, 0);
+// Add event listeners to each draggable image container
+images.forEach((image) => {
+  image.addEventListener('dragstart', handleDragStart);
+  image.addEventListener('dragover', handleDragOver);
+  image.addEventListener('drop', handleDrop);
+  image.addEventListener('dragenter', handleDragEnter);
+  image.addEventListener('dragleave', handleDragLeave);
+});
+
+function handleDragStart(event) {
+  draggedElement = event.target;
+  event.target.style.opacity = '0.5'; // Visually indicate dragging
 }
 
-// Allow dragging over the div
-function dragOver(e) {
-  e.preventDefault();
+function handleDragOver(event) {
+  event.preventDefault(); // Allow dropping
 }
 
-// Highlight the target while dragging over it
-function dragEnter(e) {
-  e.preventDefault();
-  if (e.target && e.target.classList.contains('image')) {
-    e.target.style.backgroundColor = 'yellow';
+function handleDrop(event) {
+  event.preventDefault();
+
+  if (event.target !== draggedElement && event.target.classList.contains('image')) {
+    // Swap inner HTML to exchange images
+    const draggedHTML = draggedElement.innerHTML;
+    draggedElement.innerHTML = event.target.innerHTML;
+    event.target.innerHTML = draggedHTML;
+  }
+
+  // Reset styles
+  resetDragStyles();
+}
+
+function handleDragEnter(event) {
+  if (event.target.classList.contains('image')) {
+    event.target.style.backgroundColor = 'yellow'; // Highlight potential drop target
   }
 }
 
-// Remove highlight when the dragged item leaves the target
-function dragLeave(e) {
-  if (e.target && e.target.classList.contains('image')) {
-    e.target.style.backgroundColor = '';
+function handleDragLeave(event) {
+  if (event.target.classList.contains('image')) {
+    event.target.style.backgroundColor = ''; // Remove highlight
   }
 }
 
-// Handle the drop event
-function drop(e) {
-  e.preventDefault();
-  if (e.target && e.target.classList.contains('image')) {
-    e.target.style.backgroundColor = '';
-    const droppedElement = e.target;
-    if (draggedElement !== droppedElement) {
-      // Swap the images between the two elements
-      const draggedImg = draggedElement.querySelector('img');
-      const droppedImg = droppedElement.querySelector('img');
-      const tempSrc = draggedImg.src;
-      draggedImg.src = droppedImg.src;
-      droppedImg.src = tempSrc;
-    }
-    draggedElement.style.opacity = '1';
-  }
+// Reset styles after drag ends
+function resetDragStyles() {
+  images.forEach((image) => {
+    image.style.opacity = '1';
+    image.style.backgroundColor = '';
+  });
 }
