@@ -1,54 +1,41 @@
-const images = document.querySelectorAll('.image');
-let draggedElement = null;
 
-// Add event listeners to each draggable image container
-images.forEach((image) => {
-  image.addEventListener('dragstart', handleDragStart);
-  image.addEventListener('dragover', handleDragOver);
-  image.addEventListener('drop', handleDrop);
-  image.addEventListener('dragenter', handleDragEnter);
-  image.addEventListener('dragleave', handleDragLeave);
-});
+let dragIndex;
+let dropIndex = 0;
 
-function handleDragStart(event) {
-  draggedElement = event.target;
-  event.target.style.opacity = '0.5'; // Visually indicate dragging
-}
+const images = document.querySelectorAll(".image");
 
-function handleDragOver(event) {
-  event.preventDefault(); // Allow dropping
-}
+const drag = (e) => {
+  e.dataTransfer.setData("text", (link unavailable));
+};
 
-function handleDrop(event) {
-  event.preventDefault();
+const allowDrop = (e) => {
+  e.preventDefault();
+};
 
-  if (event.target !== draggedElement && event.target.classList.contains('image')) {
-    // Swap inner HTML to exchange images
-    const draggedHTML = draggedElement.innerHTML;
-    draggedElement.innerHTML = event.target.innerHTML;
-    event.target.innerHTML = draggedHTML;
+const drop = (e) => {
+  e.preventDefault();
+  const clone = e.target.cloneNode(true);
+  const data = e.dataTransfer.getData("text");
+  const nodeList = document.getElementById("parent").childNodes;
+  console.log(data, (link unavailable));
+
+  for (let i = 0; i < nodeList.length; i++) {
+    if (nodeList[i].id === data) {
+      dragIndex = i;
+    }
+    if (nodeList[i].id === (link unavailable)) {
+      dropIndex = i;
+    }
   }
 
-  // Reset styles
-  resetDragStyles();
-}
+  document.getElementById("parent").replaceChild(document.getElementById(data), e.target);
+  document.getElementById("parent").insertBefore(clone, document.getElementById("parent").childNodes[dragIndex]);
+};
 
-function handleDragEnter(event) {
-  if (event.target.classList.contains('image')) {
-    event.target.style.backgroundColor = 'yellow'; // Highlight potential drop target
-  }
-}
+const dragDrop = (image) => {
+  image.ondragstart = drag;
+  image.ondragover = allowDrop;
+  image.ondrop = drop;
+};
 
-function handleDragLeave(event) {
-  if (event.target.classList.contains('image')) {
-    event.target.style.backgroundColor = ''; // Remove highlight
-  }
-}
-
-// Reset styles after drag ends
-function resetDragStyles() {
-  images.forEach((image) => {
-    image.style.opacity = '1';
-    image.style.backgroundColor = '';
-  });
-}
+images.forEach(dragDrop);
