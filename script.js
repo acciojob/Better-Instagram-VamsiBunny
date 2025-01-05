@@ -1,41 +1,26 @@
-
-let dragIndex;
-let dropIndex = 0;
-
 const images = document.querySelectorAll(".image");
+let draggedElement = null;
 
-const drag = (e) => {
-  e.dataTransfer.setData("text", (link unavailable));
-};
+// Event Listener for Drag Start
+images.forEach((image) => {
+  image.addEventListener("dragstart", (e) => {
+    draggedElement = e.target; // Store the dragged element
+    e.dataTransfer.effectAllowed = "move";
+  });
+  
+  image.addEventListener("dragover", (e) => {
+    e.preventDefault(); // Allow the drop
+    e.dataTransfer.dropEffect = "move";
+  });
 
-const allowDrop = (e) => {
-  e.preventDefault();
-};
+  image.addEventListener("drop", (e) => {
+    e.preventDefault();
 
-const drop = (e) => {
-  e.preventDefault();
-  const clone = e.target.cloneNode(true);
-  const data = e.dataTransfer.getData("text");
-  const nodeList = document.getElementById("parent").childNodes;
-  console.log(data, (link unavailable));
-
-  for (let i = 0; i < nodeList.length; i++) {
-    if (nodeList[i].id === data) {
-      dragIndex = i;
+    if (draggedElement !== e.target && e.target.classList.contains('image')) {
+      // Swap the inner HTML of dragged and dropped elements
+      const tempHTML = draggedElement.innerHTML;
+      draggedElement.innerHTML = e.target.innerHTML;
+      e.target.innerHTML = tempHTML;
     }
-    if (nodeList[i].id === (link unavailable)) {
-      dropIndex = i;
-    }
-  }
-
-  document.getElementById("parent").replaceChild(document.getElementById(data), e.target);
-  document.getElementById("parent").insertBefore(clone, document.getElementById("parent").childNodes[dragIndex]);
-};
-
-const dragDrop = (image) => {
-  image.ondragstart = drag;
-  image.ondragover = allowDrop;
-  image.ondrop = drop;
-};
-
-images.forEach(dragDrop);
+  });
+});
