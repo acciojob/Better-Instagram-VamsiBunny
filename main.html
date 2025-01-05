@@ -2,34 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Image Drag and Drop</title>
+  <title>Draggable Image Grid</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1 style="text-align: center;">Arrange Images by Drag and Drop</h1>
-  <div class="grid-container" id="parent">
-   <div id="div1" class="image" draggable="true">
-  <img src="https://via.placeholder.com/150/FF0000" alt="Red" />
-</div>
-<div id="div2" class="image" draggable="true">
-  <img src="https://via.placeholder.com/150/00FF00" alt="Green" />
-</div>
-<div id="div3" class="image" draggable="true">
-  <img src="https://via.placeholder.com/150/0000FF" alt="Blue" />
-</div>
-<div id="div4" class="image" draggable="true">
-  <img src="https://via.placeholder.com/150/FFFF00" alt="Yellow" />
-</div>
-<div id="div5" class="image" draggable="true">
-  <img src="https://via.placeholder.com/150/FF00FF" alt="Magenta" />
-</div>
-<div id="div6" class="image" draggable="true">
-  <img src="https://via.placeholder.com/150/00FFFF" alt="Cyan" />
-</div>
-
+  <div class="grid">
+    <div id="div1" class="draggable" draggable="true"></div>
+    <div id="div2" class="draggable" draggable="true"></div>
+    <div id="div3" class="draggable" draggable="true"></div>
+    <div id="div4" class="draggable" draggable="true"></div>
+    <div id="div5" class="draggable" draggable="true"></div>
+    <div id="div6" class="draggable" draggable="true"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>

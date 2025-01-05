@@ -1,26 +1,43 @@
-const images = document.querySelectorAll(".image");
+const draggables = document.querySelectorAll('.draggable');
 let draggedElement = null;
 
-// Event Listener for Drag Start
-images.forEach((image) => {
-  image.addEventListener("dragstart", (e) => {
-    draggedElement = e.target; // Store the dragged element
-    e.dataTransfer.effectAllowed = "move";
-  });
-  
-  image.addEventListener("dragover", (e) => {
-    e.preventDefault(); // Allow the drop
-    e.dataTransfer.dropEffect = "move";
+draggables.forEach(div => {
+  div.addEventListener('dragstart', (e) => {
+    draggedElement = e.target;
+    setTimeout(() => {
+      draggedElement.style.opacity = '0.5';
+    }, 0);
   });
 
-  image.addEventListener("drop", (e) => {
+  div.addEventListener('dragend', () => {
+    setTimeout(() => {
+      draggedElement.style.opacity = '1';
+      draggedElement = null;
+    }, 0);
+  });
+
+  div.addEventListener('dragover', (e) => {
     e.preventDefault();
+  });
 
-    if (draggedElement !== e.target && e.target.classList.contains('image')) {
-      // Swap the inner HTML of dragged and dropped elements
-      const tempHTML = draggedElement.innerHTML;
-      draggedElement.innerHTML = e.target.innerHTML;
-      e.target.innerHTML = tempHTML;
+  div.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    e.target.style.border = '2px dashed #000';
+  });
+
+  div.addEventListener('dragleave', (e) => {
+    e.target.style.border = '2px solid #ccc';
+  });
+
+  div.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.target.style.border = '2px solid #ccc';
+
+    // Swap background images of dragged and dropped elements
+    if (draggedElement !== e.target) {
+      const tempBackground = e.target.style.backgroundImage;
+      e.target.style.backgroundImage = draggedElement.style.backgroundImage;
+      draggedElement.style.backgroundImage = tempBackground;
     }
   });
 });
